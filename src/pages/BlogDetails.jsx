@@ -1,24 +1,26 @@
-import { doc, getDoc, deleteDoc } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
+import { doc, getDoc, deleteDoc, getDocs, where, query, collection } from 'firebase/firestore';
+import React, { useEffect, useState, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
 import Layout from './Layout';
 import { RiEditBoxLine } from 'react-icons/ri';
+import { AuthContext } from '../context/AuthContextApi';
 
 const BlogDetails = () => {
-const { id } = useParams();
+const { slug } = useParams();
 const [blog, setBlog] = useState({});
 const navigate = useNavigate();
+const { user } = useContext(AuthContext);
 
 // setting single blog collection reference
-const blogRef = doc(db, 'blogs', id);
+const blogRef = query(collection(db, 'blogs'), where('slug', '==', slug));
 
 useEffect(() => {
    // get single blog from firebase-firestore
  const getBlog = async () => {
     try{
-      const blog = await getDoc(blogRef);
-      setBlog({...blog.data(), id: blog.id});
+      const blogs = await getDocs(blogRef);
+      setBlog({...blogs.docs[0].data(), id: blogs.docs[0].id});
     }catch(error){
       console.log(error.message);
       navigate('/');
@@ -31,7 +33,8 @@ useEffect(() => {
 
 document.title = blog.title;
 
-const handleDelete = async () => {
+const handleDelete = async (id) => {
+  const blogRef = doc(db, 'blogs', id);
   await deleteDoc(blogRef);
   navigate('/');
 }
@@ -49,14 +52,17 @@ const handleDelete = async () => {
                   Go back
                 </Link>
                 
-                <Link to ={`/update/${blog.id}`} className='bg-green-600 py-3 px-4 rounded text-white hover:bg-green-700 transition flex gap-x-2 items-center'>
-                  <span>Edit</span>
-                  <RiEditBoxLine className='text-2xl' />
-                </Link>
+                {(user.uid === blog.userId) && <>
+                  <Link to ={`/update/${blog.id}`} className='bg-green-600 py-3 px-4 rounded text-white hover:bg-green-700 transition flex gap-x-2 items-center'>
+                    <span>Edit</span>
+                    <RiEditBoxLine className='text-2xl' />
+                  </Link>
 
-                <button onClick={handleDelete} className='bg-red-600 py-3 px-5 rounded text-white hover:bg-red-700 transition'>
-                  Delete
-                </button>
+                  <button onClick={() => handleDelete(blog.id)} className='bg-red-600 py-3 px-5 rounded text-white hover:bg-red-700 transition'>
+                    Delete
+                  </button>
+                </>
+                }
               </div>
             }
         </div>}

@@ -2,19 +2,20 @@ import React, { useContext, Suspense } from 'react';
 import { BlogContext } from '../context/BlogContextApi';
 import Layout from './Layout';
 import Blog from '../components/Blog';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContextApi';
 
 const Index = () => {
-  const { blogs, userBlogs, getCurrentUserBlogs } = useContext(BlogContext);
+  const { blogs } = useContext(BlogContext);
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   
 
   document.title = 'React Firebase Tutorial | Welcome to DevBlogs';
 
-  const getUserBlogs = () => {
-    getCurrentUserBlogs(user.uid);
-    console.log({...userBlogs, AuthUserId: user.uid});
+  const navigateToDashboard = () => {
+    const name = user?.name.replace(/\s+/g, '-');
+    navigate(`/dashboard/${name}`);
   }
 
   return (
@@ -29,7 +30,7 @@ const Index = () => {
           {blogs.map(blog => (
             <Link 
               className='col-span-1 hover:text-slate-500 p-5 rounded shadow-xl' 
-              to={`/blog/${blog.id}`} 
+              to={`/blog/${blog.slug}`} 
               key={blog.id}>
               <Blog blog={blog} />
             </Link>
@@ -40,9 +41,9 @@ const Index = () => {
 
       {blogs.length !== 0 && 
         <button 
-          onClick={getUserBlogs}
+          onClick={navigateToDashboard}
           className='mx-auto flex justify-center items-center my-4 bg-blue-700 rounded text-white px-4 py-3'>
-          Get Current User Blogs
+          Manage Your Blogs
         </button>}
 
       {blogs.length === 0 && 

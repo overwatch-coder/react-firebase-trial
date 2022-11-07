@@ -15,7 +15,8 @@ import {
   query,
   updateDoc,
   doc,
-  getDoc
+  getDoc,
+  where
 } from 'firebase/firestore';
 
 export const BlogContext = createContext();
@@ -63,10 +64,10 @@ export const BlogContext = createContext();
 
   // get blogs created by current user
   const getCurrentUserBlogs = async (userId) =>{
-    const blogsRef = doc(db, 'blogs', userId);
+    const blogsRef = query(collection(db, 'blogs'), where('userId', '==', userId));
     try {
-      const data = await getDoc(blogsRef);
-      setUserBlogs(data.docs.map(blog => ({...blog.data(), id: blog.id})));
+      const data = await getDocs(blogsRef);
+      setUserBlogs(data?.docs?.map(blog => ({...blog.data(), id: blog.id})));
     } catch (error) {
       console.log(error.message);
     }

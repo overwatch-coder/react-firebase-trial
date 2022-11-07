@@ -7,6 +7,7 @@ import personImg from '../assets/person.jpg';
 const Navbar = () => {
   const { isAuth, signOutUser, user } = useContext(AuthContext);
   const { name } = user;
+  const dashboardName = name?.replace(/\s+/g, '-');
   const firstName = name?.split(' ')[0];
 
   const profilePicture = user?.photoURL ? user.photoURL : personImg;
@@ -61,12 +62,23 @@ const Navbar = () => {
                 Home
             </Link>
 
-           {isAuth && <Link 
-              className='text-white uppercase hover:text-cyan-500' 
-              to='/create'
-              >
-                Create Blog
-            </Link>}
+           {isAuth && 
+            <>
+                <Link 
+                className='text-white uppercase hover:text-cyan-500' 
+                to='/create'
+                >
+                  Create Blog
+              </Link>
+
+              <Link 
+                className='text-white uppercase hover:text-cyan-500' 
+                to={`/dashboard/${dashboardName}`}
+                >
+                  Dashboard
+              </Link>
+            </>
+           }
 
             {!isAuth && 
               <>
@@ -84,7 +96,7 @@ const Navbar = () => {
                     Register
                 </Link>
                 </>
-          }
+            }
         </ul>
 
         {/* User details and logout button */ }
@@ -118,13 +130,23 @@ const Navbar = () => {
                 Home
             </Link>
 
-           {isAuth && 
-            <Link 
-              className='px-3 text-white uppercase hover:bg-cyan-900 py-3 rounded' 
-              to='/create'
-              >
-                Create Blog
-            </Link>}
+            {isAuth &&
+              <>
+                <Link 
+                  className='px-3 text-white uppercase hover:bg-cyan-900 py-3 rounded' 
+                  to='/create'
+                  >
+                    Create Blog
+                </Link>
+
+                <Link 
+                  className='px-3 text-white uppercase hover:bg-cyan-900 py-3 rounded' 
+                  to={`/dashboard/${dashboardName}`}
+                  >
+                    Dashboard
+                </Link>
+              </> 
+            }
 
             {!isAuth && 
               <>

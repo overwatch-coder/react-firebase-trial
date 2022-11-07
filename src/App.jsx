@@ -15,7 +15,7 @@ const App = () =>{
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Index />} />
+        <Route path="/" element={isAuth ? <Index /> : <Navigate to ='/login' />} />
         <Route path="/blog/:id" element={<BlogDetails />} />
         <Route path="/create" element={isAuth ? <CreateBlog /> : <Navigate to ='/login' />} />
         <Route path="/login" element={!isAuth ? <Login /> : <Navigate to ='/' /> } />

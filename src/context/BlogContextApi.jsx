@@ -42,9 +42,9 @@ export const BlogContext = createContext();
   }, [blogs]);
 
   // add blog to firebase-firestore
-  const addBlog = async (blog) => {
+  const addBlog = async (blog, slug, author) => {
     try{
-      await addDoc(blogsRef, {...blog, createdAt: serverTimestamp()}); 
+      await addDoc(blogsRef, {...blog, slug, author, createdAt: serverTimestamp()}); 
       window.location.pathname='/';
     }catch(error) {
       console.log(error.message);
@@ -62,8 +62,8 @@ export const BlogContext = createContext();
   }
 
   // get blogs created by current user
-  const getCurrentUserBlogs = async (id) =>{
-    const blogsRef = doc(db, 'blogs', id);
+  const getCurrentUserBlogs = async (userId) =>{
+    const blogsRef = doc(db, 'blogs', userId);
     try {
       const data = await getDoc(blogsRef);
       setUserBlogs(data.docs.map(blog => ({...blog.data(), id: blog.id})));

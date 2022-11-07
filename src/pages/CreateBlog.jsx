@@ -19,7 +19,10 @@ const CreateBlog = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    addBlog(inputs);
+    const title = inputs.title;
+    const slug = title.replace(/\s+/g, '-').toLowerCase();
+    const author = user?.name.split(' ')[0];
+    addBlog(inputs, slug, author);
   }
 
   return (
@@ -47,9 +50,9 @@ const CreateBlog = () => {
               type="text" 
               placeholder='Enter author name...' name='author' 
               className='w-full py-3 px-4 focus:border-b-2 focus:border-black outline-none border border-black rounded'
-              onChange={handleInputChange}
-              value={inputs.author || ''}
-              required />
+              value={user?.name.split(' ')[0]}
+              disabled
+              />
           </div>
 
           <div className='flex flex-col gap-y-2 w-full'>

@@ -59,9 +59,9 @@ const UpdateBlog = () => {
               type="text" 
               placeholder='Enter author name...' name='author' 
               className='w-full py-3 px-4 focus:border-b-2 focus:border-black outline-none border border-black rounded'
-              onChange={handleInputChange}
-              value={inputs.author || ''}
-              required />
+              value={inputs.author}
+              disabled
+              />
           </div>
 
           <div className='flex flex-col gap-y-2 w-full'>

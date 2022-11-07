@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, Suspense } from 'react';
 import { BlogContext } from '../context/BlogContextApi';
 import Layout from './Layout';
 import Blog from '../components/Blog';
@@ -23,16 +23,20 @@ const Index = () => {
         All Blogs
       </h1>
 
-      {blogs && <ul className='max-w-5xl grid gric-cols-1 sm:grid-cols-2 gap-5 mx-auto mb-20'>
-        {blogs.map(blog => (
-          <Link 
-            className='col-span-1 hover:text-slate-500 p-5 rounded shadow-xl' 
-            to={`/blog/${blog.id}`} 
-            key={blog.id}>
-            <Blog blog={blog} />
-          </Link>
-        ))}
-      </ul>}
+      <Suspense fallback={<p>Fetching and Loading blogs ....</p>}>
+      {blogs && 
+        <ul className='max-w-5xl grid gric-cols-1 sm:grid-cols-2 gap-5 mx-auto mb-20'>
+          {blogs.map(blog => (
+            <Link 
+              className='col-span-1 hover:text-slate-500 p-5 rounded shadow-xl' 
+              to={`/blog/${blog.id}`} 
+              key={blog.id}>
+              <Blog blog={blog} />
+            </Link>
+          ))}
+        </ul>
+      }
+      </Suspense>
 
       {blogs.length !== 0 && 
         <button 
@@ -44,10 +48,6 @@ const Index = () => {
       {blogs.length === 0 && 
         <h2 className='text-center mt-32 text-xl text-green-600'>
           Sorry! No blogs found. 
-          <br /> 
-          Daily Quota Exceeded. 
-          <br />
-          Try again later
         </h2>}
     </Layout>
   )

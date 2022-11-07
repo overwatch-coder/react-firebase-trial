@@ -18,7 +18,7 @@ useEffect(() => {
  const getBlog = async () => {
     try{
       const blog = await getDoc(blogRef);
-      setBlog({...blog.data(), id:blog.id});
+      setBlog({...blog.data(), id: blog.id});
     }catch(error){
       console.log(error.message);
       navigate('/');
@@ -38,7 +38,7 @@ const handleDelete = async () => {
 
   return (
     <Layout>
-        {<div className='mt-10 max-w-md mx-auto'>
+        {<div className='mt-10 max-w-md mx-auto mb-20'>
             <h1 className='text-2xl md:text-3xl font-bold'>{blog.title}</h1>
             {blog && <small className='italic font-light'>{blog.author}</small>}
             <p className='my-5 tracking-wide leading-relaxed'>{blog.content}</p>

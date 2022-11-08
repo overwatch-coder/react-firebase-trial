@@ -5,11 +5,16 @@ import {
         onAuthStateChanged,
         createUserWithEmailAndPassword,
         updateProfile,
-        signInWithEmailAndPassword 
+        signInWithEmailAndPassword, 
+        deleteUser,
+        reauthenticateWithCredential,
     } from 'firebase/auth';
-import React, { createContext, useState } from 'react';
-import { useEffect } from 'react';
-import { auth } from '../firebase';
+
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+
+import React, { createContext, useState, useEffect } from 'react';
+
+import { auth, storage } from '../firebase';
 
 export const AuthContext = createContext();
 
@@ -94,6 +99,23 @@ const AuthContextApi = ({children}) => {
         }
     }
 
+    // update user picture
+    const updateUserPhoto = async (photo) => {
+        const photoRef = ref(storage, `user-photos/${auth.currentUser.uid}.png`);
+        try {
+            const result = await uploadBytes(photoRef, photo);
+            if(result){
+                const photoURL = await getDownloadURL(photoRef);
+                updateProfile(auth.currentUser, {photoURL})
+                .then(() => {
+                    window.location.pathname = '/';
+                });
+            }
+        } catch (error) {
+            console.log({error})
+        }
+    }
+
     // sign user out
     const signOutUser = async () => {
         try {
@@ -102,6 +124,18 @@ const AuthContextApi = ({children}) => {
             window.location = '/login';
         } catch (error) {
             console.log('Error');
+        }
+    }
+
+    // delete user account
+    const deleteAccount = async (email, password) => {
+        const credential = {email, password}
+        const success = await reauthenticateWithCredential(auth.currentUser, credential);
+        if(success){
+            const deleted = await deleteUser(auth.currentUser);
+            if(deleted){
+                window.location.pathname = '/register';
+            }
         }
     }
 
@@ -116,7 +150,9 @@ const AuthContextApi = ({children}) => {
             createAccountWithEmailandPassword,
             loginWithEmailAndPassword,
             error,
-            setError
+            setError,
+            updateUserPhoto,
+            deleteAccount
         }}>
         {children}
     </AuthContext.Provider>

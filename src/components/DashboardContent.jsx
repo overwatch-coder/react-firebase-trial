@@ -1,8 +1,10 @@
-import {useState}from 'react';
+import {useState, useContext}from 'react';
 import profilePicture from '../assets/person.jpg';
 import DashboardBlogs from './DashboardBlogs';
 import UpdateUserImage from './UpdateUserImage';
 import UserAccount from './UserAccount';
+import { AuthContext } from '../context/AuthContextApi';
+import { useNavigate } from 'react-router-dom';
 
 const DashboardContent = (
     {   user, 
@@ -14,20 +16,40 @@ const DashboardContent = (
         accountDivRef
     }) => {
 
+    const { updateUserPhoto, deleteAccount } = useContext(AuthContext);
+    const navigate = useNavigate();
+
     const [file, setFile] = useState('');
     const [profilePhoto, setProfilePhoto] = useState(user?.photoURL ? user.photoURL : profilePicture);
     
     const handleFileChange = (event) => {
-        setFile(URL.createObjectURL(event.target.files[0]));
+        setFile(event.target.files[0]);
     }
 
     const updatePhoto = (event) => {
         event.preventDefault();
-        console.log(file);
-        setFile('');
-        // setProfilePhoto(file);
-        const input = document.querySelector('input');
-        input.value = '';
+        if(file){
+            updateUserPhoto(file);
+            setFile('');
+            setProfilePhoto(URL.createObjectURL(file));
+            const input = document.querySelector('input');
+            input.value = '';
+        }
+    }
+
+    const handleAccountDeletion = () => {
+        // const emailAddress = prompt('Enter email address');
+        // if(emailAddress){
+        //     const password = prompt('Enter your password');
+        //     if(password){
+        //         const answerIsYes = confirm('Are you sure you want to delete your account?');
+
+        //         if(answerIsYes){
+        //             deleteAccount(emailAddress, password);
+        //         }
+        //     }
+        // }
+        console.log('Account deleted');
     }
 
   return (
@@ -55,6 +77,12 @@ const DashboardContent = (
                 handleFileChange={handleFileChange}
                 file={file}
             />
+        </div>
+
+        <div className='my-5 mx-auto text-center'>
+            <button onClick={handleAccountDeletion} className='bg-red-600 text-white px-4 py-3 rounded hover:bg-red-700'>
+                Delete Account
+            </button>
         </div>
     </div>
   )

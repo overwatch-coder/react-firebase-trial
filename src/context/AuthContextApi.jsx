@@ -108,7 +108,9 @@ const AuthContextApi = ({children}) => {
                 const photoURL = await getDownloadURL(photoRef);
                 updateProfile(auth.currentUser, {photoURL})
                 .then(() => {
-                    window.location.pathname = '/';
+                    const name = auth?.currentUser?.displayName.replace(/\s+/g, '-');
+                    console.log(name);
+                    window.location.pathname = `/dashboard/${name}`;
                 });
             }
         } catch (error) {

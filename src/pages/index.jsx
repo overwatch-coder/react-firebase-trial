@@ -9,7 +9,6 @@ const Index = () => {
   const { blogs } = useContext(BlogContext);
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  
 
   document.title = 'React Firebase Tutorial | Welcome to DevBlogs';
 
@@ -47,9 +46,18 @@ const Index = () => {
         </button>}
 
       {blogs.length === 0 && 
-        <h2 className='text-center mt-32 text-xl text-green-600'>
+        <h2 className='text-center text-xl text-green-600'>
           Sorry! No blogs found. 
+          <br />
+          <p>Daily Quota Exceeded --- Free Trial Version</p>
+          <p>Try again tomorrow</p>
         </h2>}
+
+        {(Object.keys(user).length) === 0 && <div className='text-center text-white mx-auto my-16 bg-green-900 w-full md:w-[500px] p-10'>
+          <h3 className='text-3xl uppercase py-3'>demo Details</h3>
+          <p className='text-lg italic'>Email: demo@demo.com</p>
+          <p className='text-lg italic'>Password: demo2022@@</p>
+        </div>}
     </Layout>
   )
 }

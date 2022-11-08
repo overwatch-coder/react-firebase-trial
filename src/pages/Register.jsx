@@ -34,7 +34,7 @@ const Register = () => {
         {/* Form to add new post */}
         <form onSubmit={handleRegister} className='my-10 shadow-md flex flex-col items-start gap-y-5 p-5 rounded bg-slate-50'>
           <div className='flex flex-col gap-y-2 w-full'>
-            <label htmlFor="displayName" className='text-lg'>Display Name</label>
+            <label htmlFor="displayName" className='text-lg'>Name</label>
             <input 
               type="text" 
               placeholder='Enter full name...' name='displayName' 

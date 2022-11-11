@@ -1,9 +1,10 @@
-import React, { useContext, Suspense } from 'react';
+import React, { useContext, Suspense, useState } from 'react';
 import { BlogContext } from '../context/BlogContextApi';
 import Layout from './Layout';
 import Blog from '../components/Blog';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContextApi';
+import Pagination from '../components/Pagination';
 
 const Index = () => {
   const { blogs } = useContext(BlogContext);
@@ -11,6 +12,14 @@ const Index = () => {
   const navigate = useNavigate();
 
   document.title = 'React Firebase Tutorial | Welcome to DevBlogs';
+
+  // setting pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalBlogs = blogs.length;
+  const postsPerPage = 4;
+  const lastBlogIndex = currentPage * postsPerPage;
+  const firstBlogIndex = lastBlogIndex - postsPerPage;
+  const currentBlogs = blogs.slice(firstBlogIndex, lastBlogIndex);
 
   const navigateToDashboard = () => {
     const name = user?.name.replace(/\s+/g, '-');
@@ -24,21 +33,28 @@ const Index = () => {
       </h1>
 
       <Suspense fallback={<p>Fetching and Loading blogs ....</p>}>
-      {blogs && 
-        <ul className='max-w-5xl grid gric-cols-1 sm:grid-cols-2 gap-5 mx-auto mb-20'>
-          {blogs.map(blog => (
-            <Link 
-              className='col-span-1 hover:text-slate-500 p-5 rounded shadow-xl' 
-              to={`/blog/${blog.slug}`} 
-              key={blog.id}>
-              <Blog blog={blog} />
-            </Link>
-          ))}
-        </ul>
-      }
+        {blogs && 
+          <ul className='max-w-5xl grid gric-cols-1 sm:grid-cols-2 gap-5 mx-auto mb-20'>
+            {currentBlogs.map(blog => (
+              <Link 
+                className='col-span-1 hover:text-slate-500 p-5 rounded shadow-xl' 
+                to={`/blog/${blog.slug}`} 
+                key={blog.id}>
+                <Blog blog={blog} />
+              </Link>
+            ))}
+          </ul>
+        }
+
+        <Pagination 
+          totalBlogs={totalBlogs} 
+          postsPerPage={postsPerPage} 
+          setCurrentPage={setCurrentPage} 
+          currentPage={currentPage}
+        />
       </Suspense>
 
-      {blogs.length !== 0 && 
+      {(blogs.length !== 0 && (Object.keys(user).length) !== 0) &&
         <button 
           onClick={navigateToDashboard}
           className='mx-auto flex justify-center items-center my-4 bg-blue-700 rounded text-white px-4 py-3'>
